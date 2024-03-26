@@ -1,7 +1,8 @@
 
 import { useForm } from 'react-hook-form';
-import { useGetPostsQuery, useSetPostMutation } from '../Redux/features/api/baseApi';
+import { useGetPostByIdQuery, useGetPostsQuery, useSetPostMutation } from '../Redux/features/api/baseApi';
 import PostCard from '../components/PostCard';
+import { useEffect, useState } from 'react';
 
 
 
@@ -13,10 +14,17 @@ const Feed = () => {
     formState: { errors },
   } = useForm()
 
-    const [setPost,{data: postData}] = useSetPostMutation()    
-
+    const [setPost,{data: postData}] = useSetPostMutation() // returns an array
+    const [postId,setPostId] = useState(null)
     const {data : posts,isLoading, isError, error} = useGetPostsQuery() //returns an object
-    // const {data : post,isLoading, isError, error} = useGetPostByIdQuery(1) //returns an object
+    // const { data: post } = useGetPostByIdQuery(postId); //returns an object
+
+
+     useEffect(() => {
+        setPostId(postData?.id || 1)
+        console.log(postData);
+     }, [postData]);
+
 
     if(isLoading){
         return <h1 className='text-7xl'>Loading........</h1>
@@ -26,10 +34,11 @@ const Feed = () => {
         return <h1 className='text-7xl'>Something went wrong</h1>
     }
 
+   
     
   const onSubmit = (data) => {
     console.log(data)
-
+    setPost({title : 'this is a title', body : data.post, userId : 45454})
 };
 
 
